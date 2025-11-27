@@ -1,3 +1,4 @@
+import React from 'react'; 
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ChatProvider } from './context/ChatContext';
@@ -8,14 +9,15 @@ import Projects from './pages/Projects';
 import Kanban from './pages/Kanban';
 import Chat from './pages/Chat';
 import Members from './pages/Members';
-import Admin from './pages/Admin'
+import Admin from './pages/Admin';
 
 // Route Guard
-const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
+// FIXED: Changed JSX.Element to React.ReactNode
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
   if (loading) return <div>Loading...</div>;
   if (!user) return <Navigate to="/login" />;
-  return children;
+  return <>{children}</>; // Wrap children in a fragment just to be safe
 };
 
 export default function App() {
