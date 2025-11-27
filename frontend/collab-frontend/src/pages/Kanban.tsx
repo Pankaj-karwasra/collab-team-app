@@ -2,17 +2,18 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { taskApi } from '../api';
-import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Bot, Loader2 } from 'lucide-react';
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:5000');
+// UPDATED: Used Render URL
+const BACKEND_URL = import.meta.env.VITE_API_URL || 'https://collab-team-app.onrender.com';
+const socket = io(BACKEND_URL);
 
 export default function Kanban() {
   const { id: projectId } = useParams();
-  const { mongoUser } = useAuth();
+  // Removed unused mongoUser
   const [tasks, setTasks] = useState<any[]>([]);
   const [aiCommand, setAiCommand] = useState('');
   const [loadingAi, setLoadingAi] = useState(false);

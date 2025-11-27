@@ -17,9 +17,9 @@ export default function Chat() {
   // 1. Clear notifications when entering the chat
   useEffect(() => {
     clearUnread();
-    
     return () => clearUnread(); 
   }, []); 
+
   // 2. Handle Messages
   useEffect(() => {
     if (!teamId || !socket) return;
@@ -47,17 +47,11 @@ export default function Chat() {
     e.preventDefault();
     if (!input.trim() || !teamId || !socket) return;
 
-    const msgData = { 
-        content: input, 
-        teamId, 
-        senderId: { name: user?.displayName || 'Me' } 
-    };
+    // Removed unused msgData variable
     
     try {
       // 1. Send to DB
       await messageApi.send({ content: input, teamId });
-      
-      
       setInput('');
     } catch (err) {
       console.error("Send failed", err);

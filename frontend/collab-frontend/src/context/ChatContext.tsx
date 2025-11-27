@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
 import { useAuth } from './AuthContext';
 import { useLocation } from 'react-router-dom';
@@ -17,13 +17,15 @@ const ChatContext = createContext<ChatContextType>({
 
 export const useChat = () => useContext(ChatContext);
 
-// Initialize socket outside component to prevent multiple connections
-const socket = io('http://localhost:5000', { autoConnect: false });
+// UPDATED: Used Render URL
+const BACKEND_URL = import.meta.env.VITE_API_URL || 'https://collab-team-app.onrender.com';
+const socket = io(BACKEND_URL, { autoConnect: false });
 
 export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
   const { mongoUser } = useAuth();
   const [unreadCount, setUnreadCount] = useState(0);
   const location = useLocation(); 
+
   // 1. Connect Socket when user logs in
   useEffect(() => {
     if (mongoUser?.teamId) {
@@ -38,7 +40,8 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
 
   // 2. Listen for messages globally
   useEffect(() => {
-    const handleMessage = (data: any) => {
+    // Removed unused 'data' parameter
+    const handleMessage = () => {
       // Only increment if we are NOT on the chat page
       if (location.pathname !== '/chat') {
         setUnreadCount((prev) => prev + 1);
