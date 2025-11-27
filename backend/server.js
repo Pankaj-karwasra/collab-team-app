@@ -23,7 +23,6 @@ const server = http.createServer(app);
 // 1. Define all allowed domains (Localhost + Your Vercel Links)
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://collab-team-lrrjjxs2z-pankaj-karwasras-projects.vercel.app", // Your preview link
   "https://collab-team-app.vercel.app" // Your main production link (optional but recommended)
 ];
 
