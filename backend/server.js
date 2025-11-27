@@ -12,23 +12,46 @@ const messageRoutes = require('./routes/messages');
 const teamRoutes = require('./routes/teams');
 const userRoutes = require('./routes/users');
 const adminRoutes = require('./routes/admin'); 
+
 dotenv.config();
 connectDB();
 
 const app = express();
 const server = http.createServer(app);
 
+// --- FIXED CORS SETUP ---
+// 1. Define all allowed domains (Localhost + Your Vercel Links)
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://collab-team-lrrjjxs2z-pankaj-karwasras-projects.vercel.app", // Your preview link
+  "https://collab-team-app.vercel.app" // Your main production link (optional but recommended)
+];
+
 const corsOptions = {
-  origin: 'http://localhost:5173', 
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      var msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
 };
 
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// Socket.IO Setup
-const io = new Server(server, { cors: corsOptions });
+// Socket.IO Setup with FIXED CORS
+const io = new Server(server, { 
+  cors: {
+    origin: allowedOrigins, // Use the same list here
+    methods: ["GET", "POST"],
+    credentials: true
+  } 
+});
 
 // Middleware: Attach IO to every request
 app.use((req, res, next) => {
